@@ -31,32 +31,22 @@ public class Calculations {
         } catch (IOException e) { e.printStackTrace(); }
 
 
-        //Initialize Population
+       //Initialize Population
         Population pop = new Population(city_names);
-        Fitness fit = new Fitness();
 
         int [] currentRoute;
 
         for (int i = 0; i < num_routes; i++) {
             currentRoute = pop.calcRoute();
-            int fitness = fit.calcFitness(currentRoute, distances);
 
-            if(i == 0)
-                MAX_FITNESS = fitness;
+            Fitness fit = new Fitness();
+            fit.calcDistance(currentRoute, distances);
 
-//            System.out.println(fitness);
+            double fitness = fit.getFitness();
 
             //Selection
             if(fitness <= MAX_FITNESS)
                 valid_routes.add(currentRoute);
         }
-
-        for (int i = 0; i < valid_routes.size()-1; i++) {
-            fit.crossover(valid_routes.get(i), valid_routes.get(i+1));
-        }
-
-
-
-
     }
 }
