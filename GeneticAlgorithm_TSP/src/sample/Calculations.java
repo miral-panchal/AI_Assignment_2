@@ -11,8 +11,8 @@ import java.util.ArrayList;
 public class Calculations {
 
     final int num_routes = 10;
-    int MAX_FITNESS = 0;
-    ArrayList<int []> valid_routes = new ArrayList<>();
+    int MAX_DISTANCE = 0;
+    ArrayList<Route> routes = new ArrayList<>();
 
     Calculations(String [] city_names, ArrayList<String []> distances){
 
@@ -35,18 +35,23 @@ public class Calculations {
         Population pop = new Population(city_names);
 
         int [] currentRoute;
+        Fitness fit = new Fitness();
 
         for (int i = 0; i < num_routes; i++) {
             currentRoute = pop.calcRoute();
 
-            Fitness fit = new Fitness();
-            fit.calcDistance(currentRoute, distances);
+            int distance = fit.getDistance(currentRoute, distances);
 
-            double fitness = fit.getFitness();
+            if (distance > MAX_DISTANCE)
+                MAX_DISTANCE = distance;
+//            System.out.println(distance);
 
-            //Selection
-            if(fitness <= MAX_FITNESS)
-                valid_routes.add(currentRoute);
+            routes.add(new Route(distance, currentRoute));
+        }
+
+        for (int i = 0; i < routes.size(); i++) {
+            routes.get(i).setFitness(fit.getFitness(MAX_DISTANCE,routes.get(i).get_distance()));
+            System.out.println(routes.get(i).getFitness());
         }
     }
 }
