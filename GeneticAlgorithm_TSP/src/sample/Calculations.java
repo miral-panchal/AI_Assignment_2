@@ -96,8 +96,8 @@ public class Calculations {
         ArrayList temp = new ArrayList();
 
         //choose 2 random points to split at
-        int s1 =  (int)(Math.random() * size-1) + 1;
-        int s2 =  (int)(Math.random() * size-1) + 1;
+        int s1 =  (int)(Math.random() * size-2) + 1;
+        int s2 =  (int)(Math.random() * size-2) + 1;
 
 
         while(s1==s2) {s2 = rand.nextInt(routes.size()/2);}
@@ -110,16 +110,22 @@ public class Calculations {
         int [] c = new int[size];
         int [] elite = new int[end-start];
 
-        int next = end+1;
+        int next = end;
+        int ittr = 0;
         //end of loop
-        System.out.println("Start "+start+"   End "+p2.getPath()[5]);
+        System.out.println("Start "+start+"   End "+end);
+        System.out.println("End-Start: " + (end-start));
+
         for(int i = 0; i < c.length; i++ ){
-            if(i <= start && i >= end) {
+
+            //copies values in between seperators
+            if(i >= start && i < end) {
                 c[i] = p1.getPath()[i];
-                elite[i] = p1.getPath()[i];
+                elite[ittr] = p1.getPath()[i];
             }
 
-            else if(i < end) {
+            //check if values match to anything in out current copied values from above
+            else if(i >= end) {
                 boolean contains = false;
                 for (int j = 0; j <elite.length; j++) {
                     if(elite[j] == p2.getPath()[i]){
@@ -127,16 +133,20 @@ public class Calculations {
                         break;
                     }
                 }
+                System.out.println("next: " + next);
                 if(!contains) {
                     c[next] = p2.getPath()[i];
+                    System.out.println("adding the following at" + next + " iterations:" + p2.getPath()[i]);
+
                     next++;
-                }
+                }                System.out.println("adding the following at" + next + " iterations:" + p2.getPath()[i]);
+
             }
         }
 
         //start
         for (int i = 0; i <= end; i++) {
-            if(next <= size)
+            if(next == size)
                 next = 0;
             boolean contains = false;
             for (int j = 0; j <elite.length; j++) {
@@ -147,12 +157,14 @@ public class Calculations {
             }
             if(!contains) {
                 c[next] = p2.getPath()[i];
+                System.out.println("adding the following at" + next + " iterations:" + p2.getPath()[i]);
                 next++;
             }
         }
 
         for (int i = 0; i < c.length; i++) {
-            System.out.println(c[i]);
+            System.out.print(c[i] + " ");
+
         }
 
         return null;
