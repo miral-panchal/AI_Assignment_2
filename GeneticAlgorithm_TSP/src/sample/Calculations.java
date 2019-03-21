@@ -31,7 +31,7 @@ public class Calculations {
             }
         } catch (IOException e) { e.printStackTrace(); }
 
-       //Initialize Population
+        //Initialize Population
         Population pop = new Population(city_names);
 
         int [] currentRoute;
@@ -94,22 +94,28 @@ public class Calculations {
             s1 = (int) (Math.random() * (size - 2)) + 1;
             s2 = (int) (Math.random() * (size - 2)) + 1;
             if((end - start) >= 3 && s1 == s2)
-               break;
+                break;
 
             //make the smaller one the start and the larger one the end
             start = Math.min(s1, s2);
             end = Math.max(s1, s2);
         }
 
+        System.out.println("Parent 1-------------------------------------------------------");
+        for (int i = 0; i < p1.getPath().length;i++) { System.out.print(p1.getPath()[i] + " "); }
+        System.out.println();
+
+
+        System.out.println("Parent 2-------------------------------------------------------");
+        for (int i = 0; i < p2.getPath().length;i++) { System.out.print(p2.getPath()[i] + " "); }
+        System.out.println();
+
+
         int [] c = new int[size];
         int [] elite = new int[end-start];
 
         int next = end;
         int ittr = 0;
-
-        for (int i = 0; i < p1.getPath().length; i++) {
-            System.out.print(p1.getPath()[i]+" ");
-        }
 
         for(int i = 0; i < size; i++ ){
             //copies values in between seperators
@@ -152,10 +158,11 @@ public class Calculations {
             }
         }
 
-        for (int i = 0; i < c.length; i++) {
-            System.out.print(c[i] + " ");
 
-        }
+        System.out.println("Child----------------------------------------------------------");
+        for (int i = 0; i < c.length;i++) { System.out.print(c[i] + " "); }
+        System.out.println();
+
         return c;
     }
 
