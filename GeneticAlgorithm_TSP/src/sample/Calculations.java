@@ -15,6 +15,8 @@ public class Calculations {
 
     Route parent1, parent2;
 
+    Random rand = new Random();
+
     Calculations(String [] city_names, ArrayList<String []> distances){
 
         try {
@@ -46,36 +48,31 @@ public class Calculations {
             if (distance > MAX_DISTANCE)
                 MAX_DISTANCE = distance;
 
-//            System.out.println(distance);
-
             routes.add(new Route(distance, currentRoute));
-            System.out.println();
+//            System.out.println();
 
         }
 
-        System.out.println();
-        System.out.println("MAX DISTANCE: "+ MAX_DISTANCE);
+//        System.out.println();
+//        System.out.println("MAX DISTANCE: "+ MAX_DISTANCE);
 
         //Calculate Fitness
         for (int i = 0; i < routes.size(); i++) {
             int fitness = fit.getFitness(MAX_DISTANCE,routes.get(i).get_distance());
             routes.get(i).setFitness(fitness);
-            System.out.println("Fitness "+fitness);
+//            System.out.println("Fitness "+fitness);
         }
 
         sortFittest();
+        int n1 = rand.nextInt(routes.size()/4);
+        int n2 =  rand.nextInt(routes.size()/4);
 
-        int x;
-        Random rand = new Random();
-        int n1 = rand.nextInt(routes.size()/2);
-        int n2 =  rand.nextInt(routes.size()/2);
-
-        while(n1!=n2) {n2 = rand.nextInt(routes.size()/2);}
+        while(n1==n2) {n2 = rand.nextInt(routes.size()/4);}
 
         parent1 = routes.get(n1);
         parent2 = routes.get(n2);
 
-
+        getChild(parent1,parent2);
 
     }
 
@@ -92,33 +89,71 @@ public class Calculations {
         }
     }
 
-    public int [] getChild(int [] parent1, int [] parent2){
-
-        final int size = parent1.length;
-        Random rand = new Random();
-
-
-        //convert to string
-        String p1 = Arrays.toString(parent1);
-        String p2 = Arrays.toString(parent2);
+    public int [] getChild(Route p1, Route p2){
+        final int size = p2.getPath().length;
+        ArrayList temp = new ArrayList();
 
         //choose 2 random points to split at
-        int split1 = rand.nextInt(size -1);
-        int split2 = rand.nextInt(size);
+        int s1 =  (int)(Math.random() * size-1) + 1;
+        int s2 =  (int)(Math.random() * size-1) + 1;
+
+
+        while(s1==s2) {s2 = rand.nextInt(routes.size()/2);}
 
         //make the smaller one the start and the larger one the end
-        int start = Math.min(split1, split2);
-        int end = Math.max(split1, split2);
-
-        //make 2 child tours
-        List<Integer> child1 = new Vector<Integer>();
-        List<Integer> child2 = new Vector<Integer>();
-
-        //child1.addAll(parent1.subList(start, end));
-        //child2.addAll(parent2.subList(start, end))
+        int start = Math.min(s1, s2);
+        int end = Math.max(s1, s2);
 
 
-        return parent1;
+        int [] c = new int[size];
+        int [] elite = new int[end-start];
+
+        int next = end+1;
+        //end of loop
+        System.out.println("Start "+start+"   End "+p2.getPath()[5]);
+        for(int i = 0; i < c.length; i++ ){
+            if(i <= start && i >= end) {
+                c[i] = p1.getPath()[i];
+                elite[i] = p1.getPath()[i];
+            }
+
+            else if(i < end) {
+                boolean contains = false;
+                for (int j = 0; j <elite.length; j++) {
+                    if(elite[j] == p2.getPath()[i]){
+                        contains = true;
+                        break;
+                    }
+                }
+                if(!contains) {
+                    c[next] = p2.getPath()[i];
+                    next++;
+                }
+            }
+        }
+
+        //start
+        for (int i = 0; i <= end; i++) {
+            if(next <= size)
+                next = 0;
+            boolean contains = false;
+            for (int j = 0; j <elite.length; j++) {
+                if(elite[j] == p2.getPath()[i]){
+                    contains = true;
+                    break;
+                }
+            }
+            if(!contains) {
+                c[next] = p2.getPath()[i];
+                next++;
+            }
+        }
+
+        for (int i = 0; i < c.length; i++) {
+            System.out.println(c[i]);
+        }
+
+        return c;
     }
 
 }

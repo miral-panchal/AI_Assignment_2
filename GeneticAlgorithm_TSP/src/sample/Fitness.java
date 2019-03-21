@@ -19,7 +19,7 @@ public class Fitness {
             String [] a = d.get(pos);
             cost = Integer.parseInt(a[pos_2]);
 
-            System.out.println("1st: "+pos+ " 2nd: "+pos_2+ " COST:" + cost);
+//            System.out.println("1st: "+pos+ " 2nd: "+pos_2+ " COST:" + cost);
 
             distance += cost;
         }
