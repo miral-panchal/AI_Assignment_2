@@ -4,8 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 public class Calculations {
 
@@ -91,6 +90,35 @@ public class Calculations {
                 }
             }
         }
+    }
+
+    public int [] getChild(int [] parent1, int [] parent2){
+
+        final int size = parent1.length;
+        Random rand = new Random();
+
+
+        //convert to string
+        String p1 = Arrays.toString(parent1);
+        String p2 = Arrays.toString(parent2);
+
+        //choose 2 random points to split at
+        int split1 = rand.nextInt(size -1);
+        int split2 = rand.nextInt(size);
+
+        //make the smaller one the start and the larger one the end
+        int start = Math.min(split1, split2);
+        int end = Math.max(split1, split2);
+
+        //make 2 child tours
+        List<Integer> child1 = new Vector<Integer>();
+        List<Integer> child2 = new Vector<Integer>();
+
+        //child1.addAll(parent1.subList(start, end));
+        //child2.addAll(parent2.subList(start, end))
+
+
+        return parent1;
     }
 
 }
