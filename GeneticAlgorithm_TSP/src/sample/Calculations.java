@@ -5,12 +5,16 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Calculations {
 
     final int num_routes = 10;
     int MAX_DISTANCE = 0;
+    int best_fit = 0;
     ArrayList<Route> routes = new ArrayList<>();
+
+    Route parent1, parent2;
 
     Calculations(String [] city_names, ArrayList<String []> distances){
 
@@ -43,12 +47,50 @@ public class Calculations {
             if (distance > MAX_DISTANCE)
                 MAX_DISTANCE = distance;
 
+//            System.out.println(distance);
+
             routes.add(new Route(distance, currentRoute));
+            System.out.println();
+
         }
 
+        System.out.println();
+        System.out.println("MAX DISTANCE: "+ MAX_DISTANCE);
+
+        //Calculate Fitness
         for (int i = 0; i < routes.size(); i++) {
-            routes.get(i).setFitness(fit.getFitness(MAX_DISTANCE,routes.get(i).get_distance()));
-            System.out.println(routes.get(i).getFitness());
+            int fitness = fit.getFitness(MAX_DISTANCE,routes.get(i).get_distance());
+            routes.get(i).setFitness(fitness);
+            System.out.println("Fitness "+fitness);
+        }
+
+        sortFittest();
+
+        int x;
+        Random rand = new Random();
+        int n1 = rand.nextInt(routes.size()/2);
+        int n2 =  rand.nextInt(routes.size()/2);
+
+        while(n1!=n2) {n2 = rand.nextInt(routes.size()/2);}
+
+        parent1 = routes.get(n1);
+        parent2 = routes.get(n2);
+
+
+
+    }
+
+
+    void sortFittest() {
+        for (int i = 0; i < routes.size()-1; i++) {
+            for (int j = 0; j < routes.size()-2; j++) {
+                if(routes.get(i).getFitness() < routes.get(i+1).getFitness()) {
+                    Route tmp = routes.get(i);
+                    routes.set(i,routes.get(i+1));
+                    routes.set(i+1,tmp);
+                }
+            }
         }
     }
+
 }
