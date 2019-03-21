@@ -10,7 +10,6 @@ public class Calculations {
 
     final int num_routes = 10;
     int MAX_DISTANCE = 0;
-    int best_fit = 0;
     ArrayList<Route> routes = new ArrayList<>();
 
     Route parent1, parent2;
@@ -18,7 +17,6 @@ public class Calculations {
     Random rand = new Random();
 
     Calculations(String [] city_names, ArrayList<String []> distances){
-
         try {
             File file = new File("TEST_DATA.csv");
             BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -32,7 +30,6 @@ public class Calculations {
                 distances.add(temp);
             }
         } catch (IOException e) { e.printStackTrace(); }
-
 
        //Initialize Population
         Population pop = new Population(city_names);
@@ -49,18 +46,12 @@ public class Calculations {
                 MAX_DISTANCE = distance;
 
             routes.add(new Route(distance, currentRoute));
-//            System.out.println();
-
         }
-
-//        System.out.println();
-//        System.out.println("MAX DISTANCE: "+ MAX_DISTANCE);
 
         //Calculate Fitness
         for (int i = 0; i < routes.size(); i++) {
             int fitness = fit.getFitness(MAX_DISTANCE,routes.get(i).get_distance());
             routes.get(i).setFitness(fitness);
-//            System.out.println("Fitness "+fitness);
         }
 
         sortFittest();
@@ -72,12 +63,15 @@ public class Calculations {
         parent1 = routes.get(n1);
         parent2 = routes.get(n2);
 
-        Route nextGeneration =  getChild(parent1,parent2);
+        int[] next_gen_route =  crossover(parent1,parent2);
+        int temp_distance = fit.getDistance(next_gen_route,distances);
+        int temp_fitness = fit.getFitness(MAX_DISTANCE, temp_distance);
+
+        Route nextGeneration = new Route(temp_distance,next_gen_route);
+        nextGeneration.setFitness(temp_fitness);
 
         mutate(nextGeneration);
-
     }
-
 
     void sortFittest() {
         for (int i = 0; i < routes.size()-1; i++) {
@@ -91,37 +85,38 @@ public class Calculations {
         }
     }
 
-    public Route getChild(Route p1, Route p2){
+    public int [] crossover(Route p1, Route p2){
         final int size = p2.getPath().length;
-        ArrayList temp = new ArrayList();
 
         //choose 2 random points to split at
-        int s1 =  (int)(Math.random() * size-2) + 1;
-        int s2 =  (int)(Math.random() * size-2) + 1;
+        int s1=0,s2=0,start=0,end=0;
+        while(true) {
+            s1 = (int) (Math.random() * (size - 2)) + 1;
+            s2 = (int) (Math.random() * (size - 2)) + 1;
+            if((end - start) >= 3 && s1 == s2)
+               break;
 
-
-        while(s1==s2) {s2 = rand.nextInt(routes.size()/2);}
-
-        //make the smaller one the start and the larger one the end
-        int start = Math.min(s1, s2);
-        int end = Math.max(s1, s2);
-
+            //make the smaller one the start and the larger one the end
+            start = Math.min(s1, s2);
+            end = Math.max(s1, s2);
+        }
 
         int [] c = new int[size];
         int [] elite = new int[end-start];
 
         int next = end;
         int ittr = 0;
-        //end of loop
-        System.out.println("Start "+start+"   End "+end);
-        System.out.println("End-Start: " + (end-start));
 
-        for(int i = 0; i < c.length; i++ ){
+        for (int i = 0; i < p1.getPath().length; i++) {
+            System.out.print(p1.getPath()[i]+" ");
+        }
 
+        for(int i = 0; i < size; i++ ){
             //copies values in between seperators
             if(i >= start && i < end) {
                 c[i] = p1.getPath()[i];
                 elite[ittr] = p1.getPath()[i];
+                ittr++;
             }
 
             //check if values match to anything in out current copied values from above
@@ -133,14 +128,10 @@ public class Calculations {
                         break;
                     }
                 }
-                System.out.println("next: " + next);
                 if(!contains) {
                     c[next] = p2.getPath()[i];
-                    System.out.println("adding the following at" + next + " iterations:" + p2.getPath()[i]);
-
                     next++;
-                }                System.out.println("adding the following at" + next + " iterations:" + p2.getPath()[i]);
-
+                }
             }
         }
 
@@ -157,7 +148,6 @@ public class Calculations {
             }
             if(!contains) {
                 c[next] = p2.getPath()[i];
-                System.out.println("adding the following at" + next + " iterations:" + p2.getPath()[i]);
                 next++;
             }
         }
@@ -166,8 +156,7 @@ public class Calculations {
             System.out.print(c[i] + " ");
 
         }
-
-        return null;
+        return c;
     }
 
     public void mutate(Route r) {
