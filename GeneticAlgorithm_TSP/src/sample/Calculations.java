@@ -72,7 +72,9 @@ public class Calculations {
         parent1 = routes.get(n1);
         parent2 = routes.get(n2);
 
-        getChild(parent1,parent2);
+        Route nextGeneration =  getChild(parent1,parent2);
+
+        mutate(nextGeneration);
 
     }
 
@@ -89,7 +91,7 @@ public class Calculations {
         }
     }
 
-    public int [] getChild(Route p1, Route p2){
+    public Route getChild(Route p1, Route p2){
         final int size = p2.getPath().length;
         ArrayList temp = new ArrayList();
 
@@ -153,7 +155,21 @@ public class Calculations {
             System.out.println(c[i]);
         }
 
-        return c;
+        return null;
+    }
+
+    public void mutate(Route r) {
+        //choose 2 random points to split at
+        int s1 =  (int)(Math.random() * r.getPath().length-1);
+        int s2 =  (int)(Math.random() * r.getPath().length-1);
+
+        while(s1==s2) {s2 = rand.nextInt(routes.size()/2);}
+
+        int c1 = r.getPath()[s1];
+        int c2 = r.getPath()[s2];
+
+        r.getPath()[s1] = c2;
+        r.getPath()[s2] = c1;
     }
 
 }
