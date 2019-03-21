@@ -22,9 +22,9 @@ public class Population {
 
         int i = 0;
         do {
-            // Obtain a number between [0 - number of cities].
+            // Obtain a number between [0 - number of cities] to get random path.
             int n = rand.nextInt(num_cities);
-            if(check(n,routes)) {
+            if(check(n,routes)) {               //if the next selected number is not in our list add it
                 routes[i] = n;
                 i++;
             }
